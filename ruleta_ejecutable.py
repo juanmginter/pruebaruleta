@@ -474,8 +474,8 @@ def procesar():
 while True:
     #os.system('cls')
     vector_numeros=[]
-   # captura = tomar_captura()
-   # captura_guardada=grabar_captura(captura)
+    captura = tomar_captura()
+    captura_guardada=grabar_captura(captura)
     #acumulado= tomar_captura_acu()
     #acumulado_guardado=grabar_acumulado(acumulado)
 
