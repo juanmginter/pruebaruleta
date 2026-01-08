@@ -72,13 +72,13 @@ def tomar_captura_acu():
 # Función para analizar la captura de pantalla y tomar decisiones
 def grabar_captura(captura):
     # Guardar la captura en un archivo temporal
-    captura_guardada=captura.save("c:\\pip\\temp_captura.png")
+    captura_guardada=captura.save("temp_captura.png")
 
     return captura_guardada
 
 def grabar_acumulado(captura):
     # Guardar la captura en un archivo temporal
-    captura_guardada=captura.save("c:\\pip\\temp_acumulado.png")
+    captura_guardada=captura.save("temp_acumulado.png")
 
     return captura_guardada
 
@@ -316,6 +316,9 @@ def contar_seguidos_docenas(vector):
             else:
                 break
 
+    # Mostrar separador de docenas
+    print("\n--------docenas--------")
+
     # Mostrar alerta si supera el umbral
     if contador_racha > UMBRAL_DOCENAS:
         nombre_docena = ["", "1ra", "2da", "3ra"][docena_actual]
@@ -346,7 +349,7 @@ def procesar_acumulado():
 def procesar():
 
     try:
-        gausiano.redimensionar('c:\\pip\\temp_captura.png')
+        gausiano.redimensionar('temp_captura.png')
 
         results = reader.readtext('imagen_redimensionada.png')
 
