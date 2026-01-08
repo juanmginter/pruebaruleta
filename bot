@@ -1,0 +1,11 @@
+import subprocess
+
+# Ruta al ejecutable que deseas lanzar
+ruta_ejecutable = "macro.mcr"
+
+# Lanza el ejecutable y espera a que termine
+proceso = subprocess.Popen(ruta_ejecutable, shell=True)
+proceso.wait()
+
+# Aquí puedes continuar con la ejecución de tu código después de que el ejecutable haya terminado
+print("El ejecutable ha terminado de ejecutarse.")

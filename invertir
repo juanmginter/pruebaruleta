@@ -1,0 +1,39 @@
+from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+
+def cambiar_colores(imagen, cambio_color):
+# Abrir la imagen
+    img = Image.open(imagen)
+
+    # Convertir la imagen a un arreglo numpy para modificarla
+    img_array = np.array(img)
+
+    # Aplicar la función de cambio de color a todos los píxeles
+    img_modificada_array = cambio_color(img_array)
+
+    # Convertir el arreglo numpy de vuelta a una imagen
+    img_modificada = Image.fromarray(img_modificada_array)
+
+    # Mostrar las imágenes antes y después del cambio usando matplotlib
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.imshow(img)
+    plt.title('Imagen original')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(img_modificada)
+    plt.title('Imagen modificada')
+    plt.axis('off')
+
+    plt.show()
+
+def invertir_colores(img_array):
+    return 255 - img_array
+
+# Ruta de la imagen que deseas modificar
+imagen_path = 'c:\\pip\\2\captura.png'
+
+# Abrir la imagen y mostrarla antes y después de invertir los colores
+cambiar_colores(imagen_path, invertir_colores)
