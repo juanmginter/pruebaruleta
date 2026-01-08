@@ -14,6 +14,7 @@ from PIL import Image, ImageEnhance, ImageFilter
 UMBRAL_MITADES = 4
 UMBRAL_COLORES = 4
 UMBRAL_PARIDAD = 4
+UMBRAL_DOCENAS = 4
 
 # Inicializar EasyOCR (solo una vez para mejor rendimiento)
 reader = easyocr.Reader(['en'])
@@ -223,6 +224,24 @@ def color_ruleta(numero):
     else:
         return "Negro"
 
+def obtener_docena(numero):
+    if numero == 0:
+        return 0
+    elif numero <= 12:
+        return 1  # Primera docena
+    elif numero <= 24:
+        return 2  # Segunda docena
+    else:
+        return 3  # Tercera docena
+
+def obtener_contrario_docena(docena_actual):
+    if docena_actual == 1:
+        return "2da o 3ra DOCENA"
+    elif docena_actual == 2:
+        return "1ra o 3ra DOCENA"
+    else:
+        return "1ra o 2da DOCENA"
+
 # Tu vector de números
 #vector_numeros = [29, 29, 29, 29, 29, 28, 8, 19, 14, 36, 11, 35]
 
@@ -268,14 +287,50 @@ def contar_seguidos_color(vector):
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(1)
             break 
-    else:        
+    else:
          if color_actual=='Rojo':
             print(ESTILO_NEGRITA+"\nROJO: ", contador_racha,COLOR_RESET)
          else:
              if color_actual=='Negro':
                 print(ESTILO_NEGRITA+"\nNEGRO: ", contador_racha,COLOR_RESET)
-            
 
+
+def contar_seguidos_docenas(vector):
+    contador_racha = 1
+
+    # Encontrar primer número no-cero para obtener docena inicial
+    i = 0
+    docena_actual = 0
+    for numero in vector[0:]:
+        i += 1
+        if numero != 0:
+            docena_actual = obtener_docena(numero)
+            break
+
+    # Contar números consecutivos en la misma docena
+    for numero in vector[i:]:
+        if numero != 0:
+            docena = obtener_docena(numero)
+            if docena == docena_actual:
+                contador_racha += 1
+            else:
+                break
+
+    # Mostrar alerta si supera el umbral
+    if contador_racha > UMBRAL_DOCENAS:
+        nombre_docena = ["", "1ra", "2da", "3ra"][docena_actual]
+        print(ESTILO_NEGRITA + COLOR_VERDE + "\nAPOSTA " + obtener_contrario_docena(docena_actual) +
+              COLOR_RESET + ESTILO_NEGRITA + " - RACHA " + nombre_docena + " DOCENA!: " + str(contador_racha) + COLOR_RESET)
+        pygame.mixer.music.load("notificacion.wav")
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(1)
+            break
+    else:
+        nombre_docena = ["", "1ra", "2da", "3ra"][docena_actual]
+        print(ESTILO_NEGRITA + "\n" + nombre_docena + " DOCENA: ", contador_racha, COLOR_RESET)
+
+    return contador_racha
 
 
 def procesar_acumulado():
@@ -339,10 +394,11 @@ def procesar():
         # vector_numeros = [2, 4, 6, 8, 10, 12, 8, 19, 14, 36, 11, 35]
         # vector_numeros = [1, 3, 5, 7, 9, 11, 8, 19, 14, 36, 11, 35]
 
-        # LLamada a las funciones que cuentan el color, la paridad y las mitades
+        # LLamada a las funciones que cuentan el color, la paridad, las mitades y las docenas
         contar_seguidos_color(vector_numeros)
         contar_seguidos_paridad(vector_numeros)
         contar_seguidos_mitades(vector_numeros)
+        contar_seguidos_docenas(vector_numeros)
                 
     except Exception as e:
         # Manejo de errores: aquí puedes especificar qué hacer si ocurre un error al leer el texto
