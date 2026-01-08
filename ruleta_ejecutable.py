@@ -339,7 +339,7 @@ def contar_seguidos_docenas(vector):
         nombre_docena = ["", "1ra", "2da", "3ra"][docena_actual]
         print(ESTILO_NEGRITA + COLOR_VERDE + "\nAPOSTA " + obtener_contrario_docena(docena_actual) +
               COLOR_RESET + ESTILO_NEGRITA + " - RACHA " + nombre_docena + " DOCENA!: " + str(contador_racha) + COLOR_RESET)
-        pygame.mixer.music.load("notificacion.wav")
+        pygame.mixer.music.load("docenas.wav")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(1)
@@ -376,7 +376,7 @@ def contar_seguidos_filas(vector):
         nombre_fila = ["", "1ra", "2da", "3ra"][fila_actual]
         print(ESTILO_NEGRITA + COLOR_VERDE + "\nAPOSTA " + obtener_contrario_fila(fila_actual) +
               COLOR_RESET + ESTILO_NEGRITA + " - RACHA " + nombre_fila + " FILA!: " + str(contador_racha) + COLOR_RESET)
-        pygame.mixer.music.load("notificacion.wav")
+        pygame.mixer.music.load("filas.wav")
         pygame.mixer.music.play()
         while pygame.mixer.music.get_busy():
             pygame.time.Clock().tick(1)
