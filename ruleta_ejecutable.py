@@ -435,8 +435,15 @@ def procesar():
         # vector_numeros = [29, 36, 15, 26, 32, 28, 8, 19, 14, 36, 11, 35]
         # Imprimir el vector resultante
      
-        if vector_numeros[0]>=70:
-            vector_numeros[0]-=60
+        # Corregir errores de OCR en todos los números (ej: 719 → 19, 736 → 36)
+        for i in range(len(vector_numeros)):
+            while vector_numeros[i] > 36:
+                if vector_numeros[i] >= 700:
+                    vector_numeros[i] -= 700
+                elif vector_numeros[i] >= 70:
+                    vector_numeros[i] -= 70
+                elif vector_numeros[i] > 36:
+                    vector_numeros[i] -= 10
         os.system('cls')
         print("\n",vector_numeros)
         #return vector_numeros
