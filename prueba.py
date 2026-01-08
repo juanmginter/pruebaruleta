@@ -15,6 +15,7 @@ UMBRAL_MITADES = 4
 UMBRAL_COLORES = 4
 UMBRAL_PARIDAD = 4
 UMBRAL_DOCENAS = 4
+UMBRAL_FILAS = 4
 
 # Inicializar EasyOCR (solo una vez para mejor rendimiento)
 reader = easyocr.Reader(['en'])
@@ -242,6 +243,20 @@ def obtener_contrario_docena(docena_actual):
     else:
         return "1ra o 2da DOCENA"
 
+def obtener_fila(numero):
+    if numero == 0:
+        return 0
+    else:
+        return ((numero - 1) % 3) + 1  # Retorna 1, 2 o 3
+
+def obtener_contrario_fila(fila_actual):
+    if fila_actual == 1:
+        return "2da o 3ra FILA"
+    elif fila_actual == 2:
+        return "1ra o 3ra FILA"
+    else:
+        return "1ra o 2da FILA"
+
 # Tu vector de números
 #vector_numeros = [29, 29, 29, 29, 29, 28, 8, 19, 14, 36, 11, 35]
 
@@ -317,7 +332,7 @@ def contar_seguidos_docenas(vector):
                 break
 
     # Mostrar separador de docenas
-    print("\n--------docenas--------")
+    print("--------docenas--------")
 
     # Mostrar alerta si supera el umbral
     if contador_racha > UMBRAL_DOCENAS:
@@ -332,6 +347,43 @@ def contar_seguidos_docenas(vector):
     else:
         nombre_docena = ["", "1ra", "2da", "3ra"][docena_actual]
         print(ESTILO_NEGRITA + "\n" + nombre_docena + " DOCENA: ", contador_racha, COLOR_RESET)
+
+    return contador_racha
+
+
+def contar_seguidos_filas(vector):
+    contador_racha = 1
+
+    i = 0
+    fila_actual = 0
+    for numero in vector[0:]:
+        i += 1
+        if numero != 0:
+            fila_actual = obtener_fila(numero)
+            break
+
+    for numero in vector[i:]:
+        if numero != 0:
+            fila = obtener_fila(numero)
+            if fila == fila_actual:
+                contador_racha += 1
+            else:
+                break
+
+    print("\n--------filas--------")
+
+    if contador_racha > UMBRAL_FILAS:
+        nombre_fila = ["", "1ra", "2da", "3ra"][fila_actual]
+        print(ESTILO_NEGRITA + COLOR_VERDE + "\nAPOSTA " + obtener_contrario_fila(fila_actual) +
+              COLOR_RESET + ESTILO_NEGRITA + " - RACHA " + nombre_fila + " FILA!: " + str(contador_racha) + COLOR_RESET)
+        pygame.mixer.music.load("notificacion.wav")
+        pygame.mixer.music.play()
+        while pygame.mixer.music.get_busy():
+            pygame.time.Clock().tick(1)
+            break
+    else:
+        nombre_fila = ["", "1ra", "2da", "3ra"][fila_actual]
+        print(ESTILO_NEGRITA + "\n" + nombre_fila + " FILA: ", contador_racha, COLOR_RESET)
 
     return contador_racha
 
@@ -402,7 +454,8 @@ def procesar():
         contar_seguidos_paridad(vector_numeros)
         contar_seguidos_mitades(vector_numeros)
         contar_seguidos_docenas(vector_numeros)
-                
+        contar_seguidos_filas(vector_numeros)
+
     except Exception as e:
         # Manejo de errores: aquí puedes especificar qué hacer si ocurre un error al leer el texto
         print(f"Error al leer el texto en la imagen: {str(e)}")
