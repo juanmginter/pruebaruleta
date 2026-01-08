@@ -1,0 +1,11 @@
+# Dependencias para Analizador de Patrones de Ruleta
+# Python 3.8 - 3.12 recomendado
+
+easygui
+pyautogui
+easyocr
+pygame-ce
+opencv-python
+numpy
+matplotlib
+pillow

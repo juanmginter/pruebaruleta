@@ -4,30 +4,33 @@ Sistema automático de análisis de números de ruleta con detección de patrone
 
 ## Descripcion
 
-Este proyecto captura números de ruleta en tiempo real mediante PaddleOCR (Reconocimiento Óptico de Caracteres), analiza patrones estadísticos y emite alertas sonoras cuando detecta rachas significativas.
+Este proyecto captura números de ruleta en tiempo real mediante EasyOCR (Reconocimiento Óptico de Caracteres), analiza patrones estadísticos y emite alertas sonoras cuando detecta rachas significativas.
 
 ## Funcionalidades Principales
 
 - **Captura automática de pantalla** cada 4 segundos en una región específica (ROI)
-- **Reconocimiento de números** mediante PaddleOCR
-- **Detección de 3 tipos de patrones:**
+- **Reconocimiento de números** mediante EasyOCR
+- **Detección de 5 tipos de patrones:**
   - Rachas de paridad (4+ números pares o impares consecutivos)
   - Rachas de mitades (4+ números bajos 1-18 o altos 19-36)
   - Rachas de color (4+ números rojos o negros consecutivos)
+  - Rachas de docenas (4+ números en la misma docena: 1-12, 13-24, 25-36)
+  - Rachas de filas (4+ números en la misma fila del tablero)
 - **Alertas sonoras** cuando se detectan patrones
 - **Recomendaciones de apuesta** basadas en el análisis
 
 ## Estructura del Proyecto
 
 ```
-C:\pip\
-├── prueba.py              # Script principal de análisis
+C:\ruleta\
+├── ruleta_ejecutable.py   # Script principal de análisis
 ├── gausiano.py            # Módulo de procesamiento de imágenes
-├── capturas_prueba/       # Imágenes de prueba para calibración
+├── requirements.txt       # Dependencias del proyecto
 ├── par.wav                # Alerta racha par/impar
-├── mayor.wav              # Alerta números mayores
+├── mayor.wav              # Alerta números mayores/menores
 ├── win.wav                # Alerta racha de color
-└── notificacion.wav       # Notificación genérica
+├── docenas.wav            # Alerta racha de docenas
+└── filas.wav              # Alerta racha de filas
 ```
 
 ## Requisitos
@@ -35,31 +38,39 @@ C:\pip\
 ### Dependencias Python
 
 ```bash
-pip install paddlepaddle paddleocr pyautogui pygame-ce opencv-python pillow numpy easygui matplotlib
+pip install -r requirements.txt
+```
+
+O instalar manualmente:
+
+```bash
+pip install easygui pyautogui easyocr pygame-ce opencv-python pillow numpy matplotlib
 ```
 
 > **Nota:** Se usa `pygame-ce` (Community Edition) en lugar de `pygame` por mejor compatibilidad.
 
 ### Dependencias del Sistema
 
-- **Python 3.8 - 3.12** (PaddleOCR no soporta Python 3.13+)
+- **Python 3.8 - 3.12**
 
 ## Uso
 
 ### Ejecución Principal
 
 ```bash
-python prueba.py
+python ruleta_ejecutable.py
 ```
 
 ### Configuración
 
-Las constantes configurables en `prueba.py`:
+Las constantes configurables en `ruleta_ejecutable.py`:
 
 ```python
 UMBRAL_MITADES = 4    # Mínimo para detectar racha de mitades
 UMBRAL_COLORES = 4    # Mínimo para detectar racha de color
 UMBRAL_PARIDAD = 4    # Mínimo para detectar racha par/impar
+UMBRAL_DOCENAS = 4    # Mínimo para detectar racha de docenas
+UMBRAL_FILAS = 4      # Mínimo para detectar racha de filas
 intervalo_captura = 4 # Segundos entre capturas
 ```
 
@@ -73,12 +84,14 @@ intervalo_captura = 4 # Segundos entre capturas
    └── Redimensionar → Mejorar contraste/brillo → Nitidez
 
 3. OCR
-   └── PaddleOCR extrae números (0-36)
+   └── EasyOCR extrae números (0-36)
 
 4. ANÁLISIS DE PATRONES
    ├── contar_seguidos_color()     → Detecta rachas de color
    ├── contar_seguidos_paridad()   → Detecta rachas par/impar
-   └── contar_seguidos_mitades()   → Detecta rachas de mitades
+   ├── contar_seguidos_mitades()   → Detecta rachas de mitades
+   ├── contar_seguidos_docenas()   → Detecta rachas de docenas
+   └── contar_seguidos_filas()     → Detecta rachas de filas
 
 5. ALERTAS
    └── Sonido + mensaje en consola cuando racha > umbral
@@ -88,18 +101,31 @@ intervalo_captura = 4 # Segundos entre capturas
 
 | Archivo | Descripción |
 |---------|-------------|
-| `prueba.py` | Script principal que ejecuta el análisis en tiempo real |
+| `ruleta_ejecutable.py` | Script principal que ejecuta el análisis en tiempo real |
 | `gausiano.py` | Módulo de procesamiento: redimensiona a 970x90px, ajusta contraste (1.1x) y brillo (1.2x) |
+| `requirements.txt` | Lista de dependencias Python del proyecto |
+
+## Distribución de Números
+
+### Docenas
+- **1ra Docena:** 1-12
+- **2da Docena:** 13-24
+- **3ra Docena:** 25-36
+
+### Filas
+- **1ra Fila:** 1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34
+- **2da Fila:** 2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35
+- **3ra Fila:** 3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36
 
 ## Tecnologías Utilizadas
 
-- **PaddleOCR** - Reconocimiento óptico de caracteres
+- **EasyOCR** - Reconocimiento óptico de caracteres
 - **PyAutoGUI** - Captura de pantalla
-- **Pygame** - Reproducción de sonidos
+- **Pygame-CE** - Reproducción de sonidos
 - **OpenCV** - Procesamiento de imágenes
 - **Pillow** - Manipulación de imágenes
 - **NumPy** - Operaciones numéricas
-- **Colorama** - Colores en consola
+- **Matplotlib** - Visualización (opcional)
 
 ## Notas
 
