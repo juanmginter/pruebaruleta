@@ -376,7 +376,7 @@ pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
 
 # Ciclo para capturar y analizar periódicamente
 while True:
-    #captura = tomar_captura()
-    #grabar_captura(captura)
+    captura = tomar_captura()
+    grabar_captura(captura)
     procesar()
     time.sleep(intervalo_captura)
