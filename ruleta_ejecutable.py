@@ -339,18 +339,20 @@ def procesar():
             allowlist='0123456789',
             text_threshold=0.5,
             low_text=0.4,
-            width_ths=0.7
+            width_ths=0.3,
+            paragraph=False
         )
 
-        text = ''
-        for x in results:
-            text += x[1] + ' '
-
-        # Limpiar separadores que EasyOCR puede confundir
-        text = text.replace('/', ' ').replace('\\', ' ').replace('|', ' ')
-
-        # Extraer números usando la nueva función que separa números concatenados
-        vector_numeros = extraer_numeros_de_texto(text)
+        # Procesar cada deteccion individualmente para evitar fusion de numeros
+        vector_numeros = []
+        for deteccion in results:
+            texto = deteccion[1]
+            if texto.isdigit():
+                num = int(texto)
+                if 0 <= num <= 36:
+                    vector_numeros.append(num)
+                elif len(texto) > 2:
+                    vector_numeros.extend(separar_numeros_ruleta(texto))
 
         if not vector_numeros:
             return
