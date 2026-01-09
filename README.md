@@ -44,7 +44,7 @@ pip install -r requirements.txt
 O instalar manualmente:
 
 ```bash
-pip install pyautogui easyocr pygame-ce pillow
+pip install pyautogui easyocr pygame-ce opencv-python
 ```
 
 > **Nota:** Se usa `pygame-ce` (Community Edition) en lugar de `pygame` por mejor compatibilidad.
@@ -80,11 +80,11 @@ intervalo_captura = 4 # Segundos entre capturas
 1. CAPTURA
    └── pyautogui captura región de pantalla
 
-2. PREPROCESAMIENTO
-   └── Redimensionar → Mejorar contraste/brillo → Nitidez
+2. PREPROCESAMIENTO (OpenCV)
+   └── Escalado 4x → Desenfoque ligero → Mantener color
 
 3. OCR
-   └── EasyOCR extrae números → corregir_numero_ocr() corrige errores (ej: 719→19)
+   └── EasyOCR extrae números → separar_numeros_ruleta() separa números concatenados
 
 4. ANÁLISIS DE PATRONES
    ├── contar_seguidos_color()     → Detecta rachas de color
@@ -102,7 +102,7 @@ intervalo_captura = 4 # Segundos entre capturas
 | Archivo | Descripción |
 |---------|-------------|
 | `ruleta_ejecutable.py` | Script principal que ejecuta el análisis en tiempo real |
-| `gausiano.py` | Módulo de procesamiento: redimensiona a 970x90px, ajusta contraste (1.1x) y brillo (1.2x) |
+| `gausiano.py` | Módulo de procesamiento con OpenCV: escalado 4x, desenfoque ligero, mantiene color |
 | `requirements.txt` | Lista de dependencias Python del proyecto |
 
 ## Distribución de Números
@@ -122,10 +122,26 @@ intervalo_captura = 4 # Segundos entre capturas
 - **EasyOCR** - Reconocimiento óptico de caracteres
 - **PyAutoGUI** - Captura de pantalla
 - **Pygame-CE** - Reproducción de sonidos
-- **Pillow** - Manipulación y preprocesamiento de imágenes
+- **OpenCV** - Preprocesamiento de imágenes (escalado, desenfoque)
+
+## Hallazgos de Investigacion OCR
+
+Durante el desarrollo se investigaron las mejores practicas para optimizar EasyOCR en deteccion de numeros. Segun la documentacion oficial y issues de GitHub:
+
+1. **EasyOCR funciona MEJOR con imagenes a color** - no convertir a escala de grises
+2. **Umbralizacion binaria inversa** (`THRESH_BINARY_INV`) mejora deteccion de numeros
+3. **Escalado + desenfoque** (`cv2.blur(img, (3,3))`) es la combinacion mas efectiva
+4. **Parametro `text_threshold=0.3`** mejora deteccion de numeros pequenos
+5. **Tamano minimo**: imagenes deben tener >300 PPI para buen rendimiento
+6. **Numeros concatenados**: EasyOCR puede juntar numeros cercanos, se implemento `separar_numeros_ruleta()` para separarlos
+
+**Fuentes:**
+- [EasyOCR Issue #341 - Numeros individuales](https://github.com/JaidedAI/EasyOCR/issues/341)
+- [EasyOCR Issue #407 - Solo numeros](https://github.com/JaidedAI/EasyOCR/issues/407)
+- [PyImageSearch - Preprocessing for OCR](https://pyimagesearch.com/2021/11/22/improving-ocr-results-with-basic-image-processing/)
 
 ## Notas
 
-- El sistema está diseñado para Windows
-- Ajustar las coordenadas ROI según la resolución de pantalla y posición de la aplicación de ruleta
-- Los umbrales pueden modificarse según preferencias de detección
+- El sistema esta disenado para Windows
+- Ajustar las coordenadas ROI segun la resolucion de pantalla y posicion de la aplicacion de ruleta
+- Los umbrales pueden modificarse segun preferencias de deteccion

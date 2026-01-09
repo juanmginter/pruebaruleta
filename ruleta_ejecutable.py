@@ -68,16 +68,35 @@ def obtener_contrario_color(componente):
         return "ROJO"
 
 
-def corregir_numero_ocr(numero):
-    """Corrige errores de OCR donde se agregan dígitos extra (ej: 719 -> 19)"""
-    while numero > 36:
-        if numero >= 700:
-            numero -= 700
-        elif numero >= 70:
-            numero -= 70
-        else:
-            numero -= 10
-    return numero
+def separar_numeros_ruleta(texto):
+    """Separa números concatenados en números de ruleta (0-36)"""
+    numeros = []
+    i = 0
+    while i < len(texto):
+        # Intentar tomar 2 dígitos primero
+        if i + 1 < len(texto):
+            dos_digitos = int(texto[i:i+2])
+            if dos_digitos <= 36:
+                numeros.append(dos_digitos)
+                i += 2
+                continue
+        # Si no, tomar 1 dígito
+        numeros.append(int(texto[i]))
+        i += 1
+    return numeros
+
+
+def extraer_numeros_de_texto(texto_ocr):
+    """Extrae números de ruleta del texto OCR, separando números concatenados"""
+    numeros = []
+    for palabra in texto_ocr.split():
+        if palabra.isdigit():
+            if len(palabra) <= 2 and int(palabra) <= 36:
+                numeros.append(int(palabra))
+            else:
+                # Números concatenados - separar
+                numeros.extend(separar_numeros_ruleta(palabra))
+    return numeros
 
 
 def contar_seguidos_paridad(vector):
@@ -315,7 +334,12 @@ def procesar():
     try:
         gausiano.redimensionar('temp_captura.png')
 
-        results = reader.readtext('imagen_redimensionada.png', allowlist='0123456789')
+        results = reader.readtext(
+            'imagen_redimensionada.png',
+            allowlist='0123456789',
+            text_threshold=0.3,
+            low_text=0.3
+        )
 
         text = ''
         for x in results:
@@ -324,13 +348,11 @@ def procesar():
         # Limpiar separadores que EasyOCR puede confundir
         text = text.replace('/', ' ').replace('\\', ' ').replace('|', ' ')
 
-        numeros_texto = text.split()
+        # Extraer números usando la nueva función que separa números concatenados
+        vector_numeros = extraer_numeros_de_texto(text)
 
-        # Para leer el número 11 correctamente (OCR lo confunde con M1)
-        if not numeros_texto[0].isdigit():
-            numeros_texto[0] = '11'
-
-        vector_numeros = [corregir_numero_ocr(int(numero)) for numero in numeros_texto]
+        if not vector_numeros:
+            return
 
         os.system('cls')
         print("\n", vector_numeros)

@@ -4,4 +4,4 @@
 pyautogui
 easyocr
 pygame-ce
-pillow
+opencv-python

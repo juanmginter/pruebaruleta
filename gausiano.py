@@ -1,21 +1,17 @@
 import cv2
-import numpy as np
 
 def redimensionar(captura):
-    # Leer imagen con OpenCV
+    # Leer imagen con OpenCV (mantener color)
     imagen = cv2.imread(captura)
 
-    # Redimensionar (3x zoom para mejor OCR)
-    nuevo_ancho = 970
-    nuevo_alto = 90
-    imagen = cv2.resize(imagen, (nuevo_ancho, nuevo_alto), interpolation=cv2.INTER_CUBIC)
+    # Escalado 4x para mejor resolución OCR
+    factor = 4
+    nuevo_ancho = imagen.shape[1] * factor
+    nuevo_alto = imagen.shape[0] * factor
+    imagen = cv2.resize(imagen, (nuevo_ancho, nuevo_alto), interpolation=cv2.INTER_LINEAR)
 
-    # Convertir a escala de grises
-    gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+    # Desenfoque ligero (recomendado en GitHub issues de EasyOCR)
+    imagen = cv2.blur(imagen, (3, 3))
 
-    # CLAHE para mejorar contraste local
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    gris = clahe.apply(gris)
-
-    # Guardar imagen en escala de grises (EasyOCR maneja bien escala de grises)
-    cv2.imwrite('imagen_redimensionada.png', gris)
+    # Guardar imagen A COLOR (EasyOCR funciona mejor con color)
+    cv2.imwrite('imagen_redimensionada.png', imagen)
