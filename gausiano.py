@@ -14,8 +14,8 @@ def redimensionar(captura):
     # Super Resolution con EDSR
     imagen = sr.upsample(imagen)
 
-    # Unsharp mask ligero para mejorar enfoque
-    gaussian = cv2.GaussianBlur(imagen, (0, 0), 1.0)
-    imagen = cv2.addWeighted(imagen, 1.3, gaussian, -0.3, 0)
+    # Unsharp mask para mejorar nitidez
+    gaussian = cv2.GaussianBlur(imagen, (0, 0), 1.5)
+    imagen = cv2.addWeighted(imagen, 1.8, gaussian, -0.8, 0)
 
     cv2.imwrite('imagen_redimensionada.png', imagen)
