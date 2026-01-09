@@ -95,7 +95,8 @@ intervalo_captura = 4 # Segundos entre capturas
    └── Unsharp Mask ligero (mejora enfoque)
 
 3. OCR
-   └── EasyOCR extrae numeros → separar_numeros_ruleta() separa numeros concatenados
+   ├── EasyOCR extrae numeros (width_ths=0.3, paragraph=False)
+   └── Procesamiento individual de cada deteccion (evita fusion de numeros)
 
 4. ANALISIS DE PATRONES
    ├── contar_seguidos_color()     → Detecta rachas de color
@@ -152,8 +153,10 @@ Durante el desarrollo se investigaron las mejores practicas para optimizar la de
 
 ### Parametros EasyOCR
 1. **text_threshold=0.5** reduce falsos positivos
-2. **width_ths=0.7** mejora separacion de caracteres
-3. **allowlist='0123456789'** restringe a solo digitos
+2. **width_ths=0.3** evita fusion de numeros cercanos (menor = mas estricto)
+3. **paragraph=False** mantiene cada deteccion separada
+4. **allowlist='0123456789'** restringe a solo digitos
+5. **Procesamiento individual** de cada deteccion para evitar concatenacion incorrecta
 
 **Fuentes:**
 - [OpenCV DNN Super Resolution](https://docs.opencv.org/4.x/d5/d29/tutorial_dnn_superres_upscale_image_single.html)
