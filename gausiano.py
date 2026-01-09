@@ -5,7 +5,7 @@ def redimensionar(captura):
     # Abrir la imagen original
     imagen = Image.open(captura)
 
-    # Definir el nuevo tamaño deseado
+    # Definir el nuevo tamaño deseado (3x zoom)
     nuevo_ancho = 970
     nuevo_alto = 90
 
@@ -21,8 +21,8 @@ def redimensionar(captura):
     imagen_redimensionada = brillo.enhance(1.2)
 
     # Eliminación de ruido
-    imagen_redimensionada = imagen_redimensionada.filter(ImageFilter.SMOOTH_MORE)
-
+    # imagen_redimensionada = imagen_redimensionada.filter(ImageFilter.SMOOTH_MORE)
+    
     # Aplicar nitidez
     imagen_redimensionada = imagen_redimensionada.filter(ImageFilter.SHARPEN)
 
