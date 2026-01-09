@@ -73,6 +73,13 @@ def separar_numeros_ruleta(texto):
     numeros = []
     i = 0
     while i < len(texto):
+        # Si empieza con "0" y hay más dígitos, el 0 es un número separado
+        # (ningún número válido de ruleta >0 empieza con 0)
+        if texto[i] == '0' and i + 1 < len(texto):
+            numeros.append(0)
+            i += 1
+            continue
+
         # Intentar tomar 2 dígitos primero
         if i + 1 < len(texto):
             dos_digitos = int(texto[i:i+2])
@@ -348,16 +355,22 @@ def procesar():
         for deteccion in results:
             texto = deteccion[1]
             if texto.isdigit():
-                num = int(texto)
-                if 0 <= num <= 36:
-                    vector_numeros.append(num)
-                elif len(texto) > 2:
+                # Si empieza con "0" y tiene más de un dígito, separar
+                # (ej: "01" -> [0, 1], "007" -> [0, 0, 7])
+                if texto[0] == '0' and len(texto) > 1:
                     vector_numeros.extend(separar_numeros_ruleta(texto))
+                else:
+                    num = int(texto)
+                    if 0 <= num <= 36:
+                        vector_numeros.append(num)
+                    elif len(texto) > 2:
+                        vector_numeros.extend(separar_numeros_ruleta(texto))
 
         if not vector_numeros:
             return
 
         os.system('cls')
+        print("DEBUG OCR:", [(d[1], f"conf:{d[2]:.2f}", f"width:{d[0][1][0]-d[0][0][0]:.0f}") for d in results])
         print("\n", vector_numeros)
 
         contar_seguidos_color(vector_numeros)
@@ -377,6 +390,6 @@ pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
 # Ciclo para capturar y analizar periódicamente
 while True:
     captura = tomar_captura()
-    grabar_captura(captura)
+    #grabar_captura(captura)
     procesar()
     time.sleep(intervalo_captura)
