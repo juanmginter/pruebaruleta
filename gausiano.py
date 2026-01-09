@@ -1,33 +1,21 @@
-from PIL import Image, ImageEnhance, ImageFilter
+import cv2
+import numpy as np
 
 def redimensionar(captura):
+    # Leer imagen con OpenCV
+    imagen = cv2.imread(captura)
 
-    # Abrir la imagen original
-    imagen = Image.open(captura)
-
-    # Definir el nuevo tamaño deseado (3x zoom)
+    # Redimensionar (3x zoom para mejor OCR)
     nuevo_ancho = 970
     nuevo_alto = 90
+    imagen = cv2.resize(imagen, (nuevo_ancho, nuevo_alto), interpolation=cv2.INTER_CUBIC)
 
-    # Redimensionar la imagen sin pérdida de calidad utilizando LANCZOS
-    imagen_redimensionada = imagen.resize((nuevo_ancho, nuevo_alto), Image.LANCZOS)
+    # Convertir a escala de grises
+    gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
 
-    # Aplicar mejoras de contraste
-    enhancer = ImageEnhance.Contrast(imagen_redimensionada)
-    imagen_redimensionada = enhancer.enhance(1.1)
+    # CLAHE para mejorar contraste local
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    gris = clahe.apply(gris)
 
-    # Aumentar el brillo
-    brillo = ImageEnhance.Brightness(imagen_redimensionada)
-    imagen_redimensionada = brillo.enhance(1.2)
-
-    # Eliminación de ruido
-    # imagen_redimensionada = imagen_redimensionada.filter(ImageFilter.SMOOTH_MORE)
-    
-    # Aplicar nitidez
-    imagen_redimensionada = imagen_redimensionada.filter(ImageFilter.SHARPEN)
-
-    # Guardar la imagen redimensionada
-    imagen_redimensionada.save('imagen_redimensionada.png')
-
-    # Mostrar la imagen redimensionada (opcional)
-    #imagen_redimensionada.show()
+    # Guardar imagen en escala de grises (EasyOCR maneja bien escala de grises)
+    cv2.imwrite('imagen_redimensionada.png', gris)

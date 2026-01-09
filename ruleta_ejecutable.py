@@ -1,3 +1,7 @@
+import warnings
+warnings.filterwarnings('ignore', message='.*pin_memory.*')
+warnings.filterwarnings('ignore', message='.*CUDA.*')
+
 import time
 import pyautogui
 import easyocr
