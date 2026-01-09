@@ -403,7 +403,7 @@ def procesar():
     try:
         gausiano.redimensionar('temp_captura.png')
 
-        results = reader.readtext('imagen_redimensionada.png')
+        results = reader.readtext('imagen_redimensionada.png', allowlist='0123456789')
 
         text = ''
         for x in results:
