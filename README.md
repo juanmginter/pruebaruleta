@@ -44,7 +44,7 @@ pip install -r requirements.txt
 O instalar manualmente:
 
 ```bash
-pip install easygui pyautogui easyocr pygame-ce opencv-python pillow numpy matplotlib
+pip install pyautogui easyocr pygame-ce pillow
 ```
 
 > **Nota:** Se usa `pygame-ce` (Community Edition) en lugar de `pygame` por mejor compatibilidad.
@@ -84,7 +84,7 @@ intervalo_captura = 4 # Segundos entre capturas
    └── Redimensionar → Mejorar contraste/brillo → Nitidez
 
 3. OCR
-   └── EasyOCR extrae números (0-36)
+   └── EasyOCR extrae números → corregir_numero_ocr() corrige errores (ej: 719→19)
 
 4. ANÁLISIS DE PATRONES
    ├── contar_seguidos_color()     → Detecta rachas de color
@@ -122,10 +122,7 @@ intervalo_captura = 4 # Segundos entre capturas
 - **EasyOCR** - Reconocimiento óptico de caracteres
 - **PyAutoGUI** - Captura de pantalla
 - **Pygame-CE** - Reproducción de sonidos
-- **OpenCV** - Procesamiento de imágenes
-- **Pillow** - Manipulación de imágenes
-- **NumPy** - Operaciones numéricas
-- **Matplotlib** - Visualización (opcional)
+- **Pillow** - Manipulación y preprocesamiento de imágenes
 
 ## Notas
 
