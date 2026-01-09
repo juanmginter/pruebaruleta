@@ -337,8 +337,9 @@ def procesar():
         results = reader.readtext(
             'imagen_redimensionada.png',
             allowlist='0123456789',
-            text_threshold=0.3,
-            low_text=0.3
+            text_threshold=0.5,
+            low_text=0.4,
+            width_ths=0.7
         )
 
         text = ''

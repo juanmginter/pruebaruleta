@@ -1,7 +1,8 @@
 # Dependencias para Analizador de Patrones de Ruleta
-# Python 3.8 - 3.12 recomendado
+# Python 3.12 recomendado (requerido para Super Resolution)
 
 pyautogui
 easyocr
 pygame-ce
-opencv-python
+opencv-contrib-python==4.9.0.80
+numpy<2
